@@ -23,6 +23,7 @@ class bsearchTree {
         
         this.root = this.buildTree(array,0,array.length-1);
     }
+    
     buildTree(array,start,end){
 
         if (start > end) return null;
@@ -35,6 +36,67 @@ class bsearchTree {
         newNode.right = this.buildTree(array,mid+1,end);
         
         return newNode;
+    }
+
+    insert(value){
+        if (this.root == null) {
+            this.root = newNode(value);
+            return this.root;
+        }
+
+        let prevNode = null;
+        let currentNode = this.root;
+
+        while (currentNode!=null){
+            prevNode = currentNode;
+            if (currentNode.data == value) return "Node already exists!";
+            if (value > currentNode.data){
+                currentNode = currentNode.right;
+            } else {
+                currentNode = currentNode.left;
+            }
+        }
+
+        currentNode = new node(value);
+        value > prevNode.data ?
+        prevNode.right = currentNode : prevNode.left = currentNode;
+        return prettyPrint(bst.root);
+    }
+
+    delete(value) {
+        let prevNode = null;
+        let currentNode = this.root;
+
+        while ( currentNode != null ){
+            if (currentNode.data == value) break;
+            prevNode = currentNode;
+            if (currentNode.data > value){
+                currentNode = currentNode.right;
+            } else {
+                currentNode = currentNode.left;
+            }
+        }
+
+        if (currentNode.left == null && currentNode.right == null){
+            
+            currentNode = null;
+        } else if (currentNode.right == null){
+            currentNode = currentNode.left;
+        }
+        return prettyPrint(this.root);
+    }
+
+    find(value){
+        let currentNode = this.root;
+        while (currentNode.data != value){
+            if (value > currentNode.data){
+                currentNode = currentNode.right;
+            } else if (value < currentNode.data){
+                currentNode = currentNode.left;
+            }
+            if (currentNode == null) break;
+        }
+        return (currentNode != null ) ? currentNode : 'Node not found..';
     }
 }
 
