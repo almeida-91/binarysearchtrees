@@ -1,27 +1,51 @@
-class Node {
+class node {
     constructor(value){
-        this.value = value;
+        this.data = value;
         this.left = null;
         this.right =null;
     }
 }
 
-class bsearchTree {
-    constructor (){
-        this.root = new Node(null);
+const prettyPrint = (node, prefix = '', isLeft = true) => {
+    if (node.right !== null) {
+      prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
     }
-    buildTree(array,start,end){
-        if (end < start) return null;
-        array.sort();
-        let mid = ((start+end)/2);
-        if (mid == 3) return;
-        this.root.value = array[mid];
-        this.left = new bsearchTree();
-        this.right = new bsearchTree();
-        this.left.buildTree(array, start, mid-1);
-        this.right.buildTree(array, mid+1,end);
+    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+    if (node.left !== null) {
+      prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
     }
 }
 
-let bst = new bsearchTree();
-bst.buildTree([1,2,3],0,2);
+class bsearchTree {
+    constructor (array){
+        array = array.sort((a,b)=>{ return (a < b) ? -1 : 1 });
+        array = getUniques(array);
+        
+        this.root = this.buildTree(array,0,array.length-1);
+    }
+    buildTree(array,start,end){
+
+        if (start > end) return null;
+    
+        let mid = parseInt((start+end)/2);
+        
+        let newNode = new node(array[mid]);
+
+        newNode.left = this.buildTree(array,start,mid-1);
+        newNode.right = this.buildTree(array,mid+1,end);
+        
+        return newNode;
+    }
+}
+
+let bst = new bsearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+prettyPrint(bst.root);
+
+function getUniques(array){
+    let result = [];
+    for (let i=0;i<array.length;i++){
+        if (array[i] != array[i+1]) result.push(array[i]);
+    }
+    console.log(result);
+    return result;
+}
