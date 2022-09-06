@@ -109,7 +109,19 @@ class bsearchTree {
         return min;
     }
 
-    levelOrder()
+    levelOrder(fn){
+        let node = this.root;
+        if (node == null) return;
+        let levelArray = [];
+        levelArray.push(node);
+        while(levelArray.length > 0){
+            if (fn == null) console.log(levelArray.shift().data);
+            else console.log(fn(levelArray.shift().data));
+            if (node.left != null) levelArray.push(node.left);
+            if (node.right != null) levelArray.push(node.right);
+            node = levelArray[0];
+        }
+    }
 }
 
 let bst = new bsearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
@@ -136,3 +148,9 @@ function generateTree(){
     prettyPrint(newBst.root);
     console.log(array);
 }
+
+function double(n){
+    return n*2;
+}
+
+bst.levelOrder(bst.root,double);
