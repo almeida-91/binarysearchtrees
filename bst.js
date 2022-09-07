@@ -157,6 +157,28 @@ class bsearchTree {
 
         return array;
     }
+
+    height(node){
+        if (node == null) return -1;
+        let leftHeight = this.height(node.left);
+        let rightHeight = this.height(node.right);
+        return Math.max(leftHeight,rightHeight)+1;
+    }
+
+    depth(node){
+        if (node == this.root) return 0;
+        let depth = 0;
+        let currentNode = this.root;
+        while (currentNode!=node){
+            if (currentNode.data > node.data){
+                currentNode = currentNode.left;
+            } else {
+                currentNode = currentNode.right;
+            }
+            depth++;
+        }
+        return depth;
+    }
 }
 
 let bst = new bsearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
@@ -187,5 +209,3 @@ function generateTree(){
 function double(n){
     return n*2;
 }
-
-//bst.levelOrder(bst.root,double);
