@@ -18,7 +18,7 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 
 class bsearchTree {
     constructor (array){
-        array = array.sort((a,b)=> a-b);
+        array = array.sort((a,b)=>{ return a-b});
         array = getUniques(array);
         
         this.root = this.buildTree(array,0,array.length-1);
@@ -60,7 +60,6 @@ class bsearchTree {
         currentNode = new node(value);
         value > prevNode.data ?
         prevNode.right = currentNode : prevNode.left = currentNode;
-        return prettyPrint(this.root);
     }
 
     delete(value, node = this.root) {
@@ -113,13 +112,23 @@ class bsearchTree {
         let node = this.root;
         if (node == null) return;
         let levelArray = [];
+        let resultArray = [];
         levelArray.push(node);
+        resultArray.push(node.data);
         while(levelArray.length > 0){
-            if (fn == null) console.log(levelArray.shift().data);
-            else console.log(fn(levelArray.shift().data));
-            if (node.left != null) levelArray.push(node.left);
-            if (node.right != null) levelArray.push(node.right);
-            node = levelArray[0];
+            node = levelArray.shift();
+            if (node.left != null){
+                levelArray.push(node.left);
+                resultArray.push(node.left.data);
+            }
+            if (node.right != null){
+                levelArray.push(node.right);
+                resultArray.push(node.right.data);
+            }
+        }
+        if (fn == null) return resultArray;
+        while (levelArray.length!=0){
+            fn(levelArray.shift);
         }
     }
 
@@ -179,10 +188,20 @@ class bsearchTree {
         }
         return depth;
     }
-}
 
-let bst = new bsearchTree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-prettyPrint(bst.root);
+    isBalanced(node){
+        if (node== null) return true;
+        let difference = this.height(node.right) - this.height(node.left);
+        if (this.isBalanced(node.left)== false) return false ;
+        if (this.isBalanced(node.right)==false) return false ;
+        return difference<=1 && difference>=-1;
+    }
+
+    rebalance() {
+        let newTree = this.inOrder(this.root);
+        this.root = new bsearchTree(newTree).root;
+    }
+}
 
 function getUniques(array){
     let result = [];
@@ -209,3 +228,45 @@ function generateTree(){
 function double(n){
     return n*2;
 }
+
+function newTreeArray(){
+    let array = [];
+    for (let i=0 ; i < 10 ; i++){
+        array.push((Math.random()*10000).toFixed(0));
+    }
+    return array;
+}
+
+function insertNodes(n) {
+    if (n<100) return 'Please choose a number above 100';
+    let randomNumber;
+    for (let i = 0 ; i < n ; i++){
+        randomNumber = (Math.random()*10000).toFixed(0);
+        bst.insert(randomNumber);
+    }
+    return prettyPrint(bst.root);
+}
+
+function printTreeInfo(){
+    console.log('==== Current Tree ====');
+    prettyPrint(bst.root);
+    console.log('==== Tree is balanced? ====');
+    console.log(bst.isBalanced(bst.root));
+    console.log('==== Tree nodes in level order ====');
+    console.log(bst.levelOrder());
+    console.log('==== Tree nodes in preorder ====');
+    console.log(bst.preOrder(bst.root));
+    console.log('==== Tree nodes in post order ====');
+    console.log(bst.postOrder(bst.root));
+    console.log('==== Tree nodes in order ====');
+    console.log(bst.inOrder(bst.root));
+}
+
+let bst = new bsearchTree(newTreeArray());
+printTreeInfo();
+
+insertNodes(100);
+console.log('==== Tree is balanced? ====');
+console.log(bst.isBalanced(bst.root));
+bst.rebalance();
+printTreeInfo();
